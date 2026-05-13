@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pawns Replays</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="header">
+    <img src="../icons/icon48.png" class="logo" alt="Pawns" onerror="this.style.display='none'" />
+    <span class="title">Pawns Replays</span>
+  </div>
+
+  <!-- Login View -->
+  <div id="view-login" class="view">
+    <p class="subtitle">Sign in to start recording your games</p>
+    <form id="login-form">
+      <input type="email"    id="email"    placeholder="Email"    required autocomplete="email" />
+      <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+      <button type="submit" id="login-btn">Sign In</button>
+    </form>
+    <p id="login-error" class="error"></p>
+    <a href="https://pawns-replays.vercel.app" target="_blank" class="link">Open Pawns Replays ↗</a>
+  </div>
+
+  <!-- Logged-in / Recording View -->
+  <div id="view-main" class="view hidden">
+    <div class="user-row">
+      <span id="username-display" class="username"></span>
+      <button id="logout-btn" class="btn-ghost">Log out</button>
+    </div>
+
+    <div id="status-box" class="status idle">
+      <div class="status-dot"></div>
+      <span id="status-text">Waiting for a game...</span>
+    </div>
+
+    <div id="game-info" class="game-info hidden">
+      <div class="info-row"><span class="label">Game ID</span><span id="game-id-val" class="val">—</span></div>
+      <div class="info-row"><span class="label">Actions</span><span id="action-count" class="val">0</span></div>
+    </div>
+
+    <div id="last-saved" class="last-saved hidden">
+      <span>Last replay saved ✓</span>
+      <a id="view-replay-link" href="#" target="_blank">View it ↗</a>
+    </div>
+
+    <a href="https://pawns-replays.vercel.app" target="_blank" class="link">Open Pawns Replays ↗</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

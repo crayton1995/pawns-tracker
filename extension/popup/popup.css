@@ -1,0 +1,237 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 280px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  background: #0f1117;
+  color: #e2e8f0;
+  padding: 0 0 12px;
+}
+
+/* ─── Header ─── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid #1e2535;
+  background: #141824;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f0f0f0;
+  letter-spacing: 0.3px;
+}
+
+/* ─── Views ─── */
+.view {
+  padding: 14px 16px;
+}
+
+.hidden { display: none !important; }
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 12px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* ─── Login Form ─── */
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+input {
+  background: #1a1f2e;
+  border: 1px solid #2d3548;
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 12px;
+  padding: 8px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus {
+  border-color: #4F8EF7;
+}
+
+input::placeholder {
+  color: #4a5568;
+}
+
+button[type="submit"] {
+  background: #4F8EF7;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+  padding: 9px;
+  transition: background 0.15s;
+}
+
+button[type="submit"]:hover  { background: #3b7de8; }
+button[type="submit"]:active { background: #2d6dd8; }
+button[type="submit"]:disabled {
+  background: #2d3548;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #f87171;
+  font-size: 11px;
+  margin-top: 6px;
+  min-height: 14px;
+}
+
+/* ─── Main View ─── */
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.username {
+  font-weight: 600;
+  color: #a5b4fc;
+  font-size: 13px;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid #2d3548;
+  border-radius: 5px;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 4px 8px;
+  transition: all 0.15s;
+}
+
+.btn-ghost:hover {
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+/* ─── Status Box ─── */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status.idle {
+  background: #1a1f2e;
+  color: #64748b;
+}
+
+.status.connected {
+  background: #1a1f2e;
+  color: #94a3b8;
+}
+
+.status.recording {
+  background: #1a2e1a;
+  color: #4ade80;
+}
+
+.status.uploading {
+  background: #1a2a3e;
+  color: #60a5fa;
+}
+
+.status.saved {
+  background: #1a2e2e;
+  color: #34d399;
+}
+
+.status.error {
+  background: #2e1a1a;
+  color: #f87171;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+}
+
+.status.recording .status-dot {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ─── Game Info ─── */
+.game-info {
+  margin-top: 10px;
+  background: #1a1f2e;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.label { color: #64748b; }
+.val   { color: #e2e8f0; font-family: monospace; }
+
+/* ─── Last Saved ─── */
+.last-saved {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1a2e2e;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #34d399;
+}
+
+/* ─── Link ─── */
+.link {
+  display: block;
+  margin-top: 12px;
+  text-align: center;
+  color: #4F8EF7;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.link:hover { text-decoration: underline; }

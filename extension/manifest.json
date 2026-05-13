@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Pawns Replays",
+  "version": "1.0.0",
+  "description": "Automatically records your Karabast Star Wars Unlimited games and saves them to Pawns Replays.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://karabast.net/*", "*://*.karabast.net/*"],
+      "js": ["injected.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["*://karabast.net/*", "*://*.karabast.net/*"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED"
+    }
+  ],
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://karabast.net/*",
+    "*://*.karabast.net/*",
+    "https://vvlyxhnmigrpgwnigyke.supabase.co/*"
+  ],
+  "web_accessible_resources": []
+}
