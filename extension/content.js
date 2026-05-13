@@ -10,6 +10,7 @@
 // ─── State ─────────────────────────────────────────────────────
 let currentGame = null;   // { meta, actions[] }
 let isRecording = false;
+let isSaving    = false;
 
 // ─── Listen for messages from injected.js ──────────────────────
 window.addEventListener('message', (event) => {
@@ -42,7 +43,7 @@ function startGame(meta) {
   // Ignore if already recording this exact game
   if (currentGame?.gameId === meta.gameId) return;
   // Ignore if currently uploading a finished game
-  if (!isRecording && currentGame) return;
+  if (isSaving) return;
 
   currentGame = {
     gameId:    meta.gameId,
@@ -79,11 +80,12 @@ function recordAction(payload) {
 }
 
 function endGame(payload) {
-  if (!isRecording || !currentGame) return;
+  if (!isRecording || !currentGame || isSaving) return;
 
   currentGame.winner  = payload.winner;
   currentGame.endedAt = payload.timestamp;
   isRecording = false;
+  isSaving    = true;
 
   const durationSecs = Math.round((payload.timestamp - currentGame.startedAt) / 1000);
 
@@ -100,6 +102,7 @@ function endGame(payload) {
       type:    'SAVE_REPLAY',
       payload: { ...currentGame },
     }, (response) => {
+      isSaving = false;
       if (chrome.runtime.lastError) {
         console.error('[Pawns Replays] Save failed:', chrome.runtime.lastError.message);
         console.error('  → If you just reloaded the extension, refresh this tab and play again.');

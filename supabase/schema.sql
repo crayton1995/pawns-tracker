@@ -56,7 +56,7 @@ CREATE TABLE public.replays (
   game_id           TEXT,   -- Karabast's internal game ID
   -- Sharing
   share_token       TEXT    UNIQUE DEFAULT encode(gen_random_bytes(12), 'base64url'),
-  is_public         BOOLEAN NOT NULL DEFAULT FALSE,
+  is_public         BOOLEAN NOT NULL DEFAULT TRUE,
   -- Meta
   created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

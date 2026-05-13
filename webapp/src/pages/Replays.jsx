@@ -39,6 +39,7 @@ export default function Replays({ session }) {
     const { data, error } = await supabase
       .from('replays')
       .select('id, player1_username, player1_leader, player1_base, player2_username, player2_leader, player2_base, winner_username, game_format, created_at, share_token, is_public, actions')
+      .eq('player1_id', session.user.id)
       .order('created_at', { ascending: false });
 
     if (!error) setReplays(data || []);

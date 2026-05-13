@@ -15,11 +15,10 @@
   const NativeWebSocket = window.WebSocket;
 
   // Track active game state
-  let currentGameId       = null;
-  let gameStarted         = false;
-  let lastGameState       = null; // most recent gamestate snapshot
-  let recentlyEndedIds    = [];   // game IDs we've already finalized — block restart
-  let debuggedCardShape   = false; // log card object shape once per session
+  let currentGameId    = null;
+  let gameStarted      = false;
+  let lastGameState    = null; // most recent gamestate snapshot
+  let recentlyEndedIds = [];   // game IDs we've already finalized — block restart
 
   function parseSocketIOMessage(rawData) {
     // Socket.IO frames start with a numeric code:
@@ -38,37 +37,6 @@
       if (!Array.isArray(parsed) || parsed.length < 2) return null;
 
       return { event: parsed[0], data: parsed[1] };
-    } catch {
-      return null;
-    }
-  }
-
-  function extractGameMeta(data) {
-    // Karabast sends game state with player info — extract what we need
-    // The shape may vary; we handle multiple known patterns
-    try {
-      const state = data?.gameState || data?.state || data;
-      if (!state) return null;
-
-      const players = state.players || [];
-      if (players.length < 2) return null;
-
-      return {
-        gameId: state.id || state.gameId || currentGameId,
-        player1: {
-          username: players[0]?.name || players[0]?.username || 'Unknown',
-          leader: players[0]?.leader?.internalName || players[0]?.leader?.title || null,
-          base: players[0]?.base?.internalName || players[0]?.base?.title || null,
-          deckName: players[0]?.deckName || null,
-        },
-        player2: {
-          username: players[1]?.name || players[1]?.username || 'Unknown',
-          leader: players[1]?.leader?.internalName || players[1]?.leader?.title || null,
-          base: players[1]?.base?.internalName || players[1]?.base?.title || null,
-          deckName: players[1]?.deckName || null,
-        },
-        format: state.format || null,
-      };
     } catch {
       return null;
     }
@@ -147,14 +115,6 @@
         const p1      = players[0] || {};
         const p2      = players[1] || {};
 
-        // One-time debug: print the actual card object shape so we can verify
-        // setId structure across Karabast versions. Remove once schema stable.
-        if (!debuggedCardShape && p1.leader) {
-          debuggedCardShape = true;
-          console.log('[Pawns Replays] DEBUG leader shape:', JSON.parse(JSON.stringify(p1.leader)));
-          console.log('[Pawns Replays] DEBUG base shape:',   JSON.parse(JSON.stringify(p1.base)));
-        }
-
         currentGameId = data.id;
         gameStarted   = true;
 
@@ -222,16 +182,8 @@
       console.log('[Pawns Replays] WebSocket connection:', url);
 
       this.addEventListener('message', (event) => {
-        // Log ALL raw messages so we can see what Karabast sends
-        if (typeof event.data === 'string' && event.data.length < 2000) {
-          console.log('[Pawns Replays] WS message:', event.data);
-        }
-
         const parsed = parseSocketIOMessage(event.data);
-        if (parsed) {
-          console.log('[Pawns Replays] Parsed event:', parsed.event, parsed.data);
-          handleIncomingMessage(parsed.event, parsed.data);
-        }
+        if (parsed) handleIncomingMessage(parsed.event, parsed.data);
       });
     }
   }

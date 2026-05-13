@@ -18,6 +18,35 @@ async function getSession() {
   });
 }
 
+async function refreshSession(session) {
+  if (!session?.refresh_token) return null;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
+      body:    JSON.stringify({ refresh_token: session.refresh_token }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.access_token) return null;
+    await setSession(data);
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+// Returns a valid session, refreshing the token if it expires within 60 seconds.
+async function getValidSession() {
+  const session = await getSession();
+  if (!session) return null;
+  const expiresAt = session.expires_at; // unix seconds from Supabase
+  if (expiresAt && Date.now() / 1000 > expiresAt - 60) {
+    return await refreshSession(session);
+  }
+  return session;
+}
+
 async function setSession(session) {
   return new Promise((resolve) => {
     chrome.storage.local.set({ pawns_session: session }, resolve);
@@ -31,7 +60,7 @@ async function clearSession() {
 }
 
 async function getAuthHeaders() {
-  const session = await getSession();
+  const session = await getValidSession();
   const token = session?.access_token || SUPABASE_ANON;
   return {
     'Content-Type':  'application/json',
@@ -100,8 +129,8 @@ async function saveReplay(game) {
   console.log('[Pawns Replays BG]   Game ID:', game.gameId);
   console.log('[Pawns Replays BG]   Actions:', game.actions?.length);
 
-  const session = await getSession();
-  if (!session?.user) throw new Error('Not logged in');
+  const session = await getValidSession();
+  if (!session?.user) throw new Error('Not logged in — session expired, please sign in again');
 
   // Try to get profile, fall back to session data if not found
   let profile = await getProfile(session.user.id);
@@ -148,7 +177,7 @@ async function saveReplay(game) {
     game_format:       game.format            || null,
     actions:           game.actions           || [],
     game_id:           game.gameId            || null,
-    is_public:         false,
+    is_public:         true,
   };
 
   const [saved] = await supabasePost('replays', replayRow);
@@ -188,7 +217,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 
   if (type === 'GET_SESSION') {
-    getSession().then(async (session) => {
+    getValidSession().then(async (session) => {
       if (!session) return sendResponse({ session: null, profile: null });
       const profile = await getProfile(session.user.id);
       sendResponse({ session, profile });
